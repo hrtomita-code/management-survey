@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>マネジメント診断調査票 ― 経営層・役員向け</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f5f5f4;
+  --color-bg-info: #eff6ff;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #555;
+  --color-text-tertiary: #999;
+  --color-border-tertiary: rgba(0,0,0,0.12);
+  --color-border-secondary: rgba(0,0,0,0.22);
+  --color-border-primary: rgba(0,0,0,0.35);
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --font-sans: -apple-system, 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-primary: #1c1c1e;
+    --color-bg-secondary: #2c2c2e;
+    --color-bg-info: #1c2a3a;
+    --color-text-primary: #f0f0f0;
+    --color-text-secondary: #aaa;
+    --color-text-tertiary: #666;
+    --color-border-tertiary: rgba(255,255,255,0.1);
+    --color-border-secondary: rgba(255,255,255,0.2);
+    --color-border-primary: rgba(255,255,255,0.3);
+  }
+}
+body { font-family: var(--font-sans); background: var(--color-bg-secondary); color: var(--color-text-primary); font-size: 16px; line-height: 1.6; }
+.survey-wrap { max-width: 800px; margin: 0 auto; padding: 0 16px 4rem; }
+
+/* Progress */
+.progress-bar-wrap { position: sticky; top: 0; z-index: 10; background: var(--color-bg-primary); border-bottom: 0.5px solid var(--color-border-tertiary); padding: 10px 0; margin-bottom: 1.5rem; }
+.progress-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.progress-info span { font-size: 12px; color: var(--color-text-secondary); }
+.progress-track { height: 4px; background: var(--color-bg-secondary); border-radius: 100px; overflow: hidden; }
+.progress-fill { height: 100%; background: #27ae60; border-radius: 100px; transition: width 0.3s; }
+
+/* Cover */
+.cover { text-align: center; padding: 3rem 2rem 2.5rem; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 2rem; }
+.cover h1 { font-size: 26px; font-weight: 500; margin-bottom: 6px; }
+.cover p { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 1.5rem; }
+.cover-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 480px; margin: 0 auto; }
+.meta-field { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+.meta-field label { font-size: 12px; color: var(--color-text-secondary); }
+.meta-field input { width: 100%; height: 34px; font-size: 13px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--radius-md); padding: 0 10px; background: var(--color-bg-primary); color: var(--color-text-primary); }
+.meta-field input:focus { outline: none; border-color: var(--color-border-primary); }
+.info-box { background: var(--color-bg-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--radius-lg); padding: 16px 20px; margin-bottom: 1rem; }
+.info-box h3 { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+.info-box p, .info-box li { font-size: 13px; color: var(--color-text-secondary); line-height: 1.65; }
+.info-box ul { padding-left: 1.2rem; }
+
+/* Sections */
+.section { margin-bottom: 2.5rem; }
+.section-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--color-bg-secondary); border-radius: var(--radius-lg); margin-bottom: 1.25rem; border: 0.5px solid var(--color-border-tertiary); }
+.section-num { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); background: var(--color-bg-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 100px; padding: 2px 9px; white-space: nowrap; }
+.section-title { font-size: 15px; font-weight: 500; }
+.section-desc { font-size: 12px; color: var(--color-text-tertiary); margin-left: auto; white-space: nowrap; }
+.subsection { margin-bottom: 1.25rem; }
+.subsection-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 8px; padding-left: 2px; }
+
+/* Question blocks */
+.q-block { background: var(--color-bg-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 8px; }
+.q-block:focus-within { border-color: var(--color-border-primary); }
+.q-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+.q-num { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); min-width: 28px; padding-top: 2px; }
+.q-text { font-size: 14px; line-height: 1.55; flex: 1; }
+.q-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 3px; }
+
+/* Scale */
+.scale-row { display: flex; gap: 5px; }
+.scale-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.scale-item input[type=radio] { display: none; }
+.scale-btn { width: 100%; height: 36px; border-radius: var(--radius-md); border: 0.5px solid var(--color-border-tertiary); cursor: pointer; font-size: 14px; font-weight: 500; color: var(--color-text-secondary); background: var(--color-bg-secondary); display: flex; align-items: center; justify-content: center; user-select: none; transition: all 0.1s; }
+.scale-btn:hover { border-color: var(--color-border-secondary); background: var(--color-bg-primary); color: var(--color-text-primary); }
+.scale-item input[type=radio]:checked + .scale-btn { color: #fff; border-color: transparent; }
+.scale-item[data-v="1"] input:checked + .scale-btn { background: #c0392b; }
+.scale-item[data-v="2"] input:checked + .scale-btn { background: #e67e22; }
+.scale-item[data-v="3"] input:checked + .scale-btn { background: #7f8c8d; }
+.scale-item[data-v="4"] input:checked + .scale-btn { background: #27ae60; }
+.scale-item[data-v="5"] input:checked + .scale-btn { background: #0d6c3e; }
+.scale-label { font-size: 10px; color: var(--color-text-tertiary); text-align: center; line-height: 1.3; }
+
+/* Open questions */
+.open-q-standalone { background: var(--color-bg-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 8px; }
+.open-q { margin-top: 10px; }
+.open-q textarea { width: 100%; font-size: 13px; color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--radius-md); padding: 8px 10px; resize: vertical; min-height: 80px; background: var(--color-bg-secondary); font-family: var(--font-sans); line-height: 1.5; }
+.open-q textarea:focus { outline: none; border-color: var(--color-border-primary); background: var(--color-bg-primary); }
+
+/* Nav */
+.nav-row { display: flex; gap: 10px; margin-top: 2rem; justify-content: center; flex-wrap: wrap; }
+.nav-btn { padding: 9px 24px; border-radius: var(--radius-md); border: 0.5px solid var(--color-border-secondary); font-size: 14px; font-weight: 500; cursor: pointer; background: var(--color-bg-primary); color: var(--color-text-primary); transition: all 0.12s; }
+.nav-btn:hover { background: var(--color-bg-secondary); }
+.nav-btn.primary { background: #1a5c38; color: #fff; border-color: #1a5c38; }
+.nav-btn.primary:hover { background: #0d4028; }
+
+/* Pages */
+.page { display: none; }
+.page.active { display: block; }
+
+/* Results */
+.complete-screen { text-align: center; padding: 3rem 2rem 1.5rem; }
+.complete-icon { width: 56px; height: 56px; border-radius: 50%; background: #e9f7ef; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 24px; color: #1a7844; }
+.complete-screen h2 { font-size: 20px; font-weight: 500; margin-bottom: 8px; }
+.complete-screen p { font-size: 14px; color: var(--color-text-secondary); }
+.summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 1.5rem 0; }
+.summary-card { background: var(--color-bg-secondary); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+.summary-card .val { font-size: 24px; font-weight: 500; }
+.summary-card .lbl { font-size: 11px; color: var(--color-text-secondary); margin-top: 4px; }
+.score-section { background: var(--color-bg-secondary); border-radius: var(--radius-lg); padding: 16px 20px; margin-bottom: 12px; }
+.score-section h4 { font-size: 13px; font-weight: 500; margin-bottom: 12px; }
+.score-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.score-row .name { font-size: 13px; min-width: 120px; }
+.score-row .bar-track { flex: 1; height: 8px; background: var(--color-bg-primary); border-radius: 100px; overflow: hidden; }
+.score-row .bar-fill { height: 100%; border-radius: 100px; }
+.score-row .score-val { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); min-width: 38px; text-align: right; }
+.priority-list { background: var(--color-bg-secondary); border-radius: var(--radius-lg); padding: 16px 20px; margin-bottom: 12px; }
+.priority-list h4 { font-size: 13px; font-weight: 500; margin-bottom: 10px; }
+.priority-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.priority-badge { font-size: 11px; background: var(--color-bg-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 100px; padding: 2px 8px; color: var(--color-text-secondary); white-space: nowrap; }
+.priority-name { font-size: 13px; flex: 1; }
+.priority-score { font-size: 12px; font-weight: 500; margin-left: auto; }
+
+@media (max-width: 480px) {
+  .cover-meta { grid-template-columns: 1fr; }
+  .summary-grid { grid-template-columns: 1fr 1fr; }
+  .scale-label { display: none; }
+  .section-desc { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="survey-wrap">
+  <div class="progress-bar-wrap">
+    <div class="progress-info">
+      <span id="pg-label">表紙</span>
+      <span id="pg-pct">0% 完了</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="pg-fill" style="width:0%"></div></div>
+  </div>
+
+  <!-- PAGE 0: Cover -->
+  <div class="page active" id="p0">
+    <div class="cover">
+      <h1>マネジメント診断調査票</h1>
+      <p>自律型組織変革に向けた現状診断　― 経営層・役員向け</p>
+      <div class="cover-meta">
+        <div class="meta-field"><label>氏名（任意）</label><input type="text" id="meta-name" placeholder="例：山田 太郎"></div>
+        <div class="meta-field"><label>役職</label><input type="text" id="meta-role" placeholder="例：取締役 CFO"></div>
+        <div class="meta-field"><label>所管領域</label><input type="text" id="meta-dept" placeholder="例：経営企画、財務"></div>
+        <div class="meta-field"><label>当社在籍年数</label><input type="text" id="meta-tenure" placeholder="例：12年"></div>
+      </div>
+    </div>
+    <div class="info-box" style="margin-top:1.5rem;">
+      <h3>調査の目的</h3>
+      <p>本調査は、意思決定の迅速化・変化適応力の強化・現場の自律的行動を実現する<strong>自律型組織への変革</strong>に向けて、現在のマネジメントの実態を経営層の視点から多角的に診断します。回答は匿名で集計されます。率直なご意見をお聞かせください。</p>
+    </div>
+    <div class="info-box">
+      <ul>
+        <li>所要時間：約 20〜30 分</li>
+        <li>回答は5段階尺度（1=全くそう思わない 〜 5=非常にそう思う）と自由記述の組み合わせです</li>
+        <li>ページは前後に移動できます。最後に「回答を確認する」ボタンで集計結果をご確認いただけます</li>
+      </ul>
+    </div>
+    <div class="nav-row"><button class="nav-btn primary" onclick="goPage(1)">調査を開始する →</button></div>
+  </div>
+
+  <!-- PAGE 1 -->
+  <div class="page" id="p1">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">第1部</span>
+        <span class="section-title">意思決定プロセスの診断</span>
+        <span class="section-desc">Q1〜Q12</span>
+      </div>
+      <div class="subsection"><div class="subsection-label">A. 意思決定のスピードと権限</div><div id="qs-a"></div></div>
+      <div class="subsection"><div class="subsection-label">B. 情報の流れと透明性</div><div id="qs-b"></div></div>
+      <div class="subsection"><div class="subsection-label">C. 会議・コミュニケーションの質</div><div id="qs-c"></div></div>
+      <div class="open-q-standalone">
+        <div class="q-top"><span class="q-num">Q13</span><div><div class="q-text">意思決定プロセスについて、経営層として最も変革すべき点をご記入ください。</div></div></div>
+        <div class="open-q"><textarea id="open-1" placeholder="ご自由にお書きください..." rows="3"></textarea></div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goPage(0)">← 戻る</button>
+      <button class="nav-btn primary" onclick="goPage(2)">次へ →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div class="page" id="p2">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">第2部</span>
+        <span class="section-title">変化対応力・組織の柔軟性</span>
+        <span class="section-desc">Q14〜Q24</span>
+      </div>
+      <div class="subsection"><div class="subsection-label">A. 環境変化の感知と適応</div><div id="qs-d"></div></div>
+      <div class="subsection"><div class="subsection-label">B. 変革への障壁</div><div id="qs-e"></div></div>
+      <div class="subsection"><div class="subsection-label">C. 学習する組織</div><div id="qs-f"></div></div>
+      <div class="open-q-standalone">
+        <div class="q-top"><span class="q-num">Q25</span><div><div class="q-text">変化対応力の向上にあたって、経営として最も優先すべき投資・施策は何ですか？</div></div></div>
+        <div class="open-q"><textarea id="open-2" placeholder="ご自由にお書きください..." rows="3"></textarea></div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goPage(1)">← 戻る</button>
+      <button class="nav-btn primary" onclick="goPage(3)">次へ →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 3 -->
+  <div class="page" id="p3">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">第3部</span>
+        <span class="section-title">自律型組織・権限委譲の状態</span>
+        <span class="section-desc">Q26〜Q36</span>
+      </div>
+      <div class="subsection"><div class="subsection-label">A. 権限委譲の実態</div><div id="qs-g"></div></div>
+      <div class="subsection"><div class="subsection-label">B. 責任と説明責任の構造</div><div id="qs-h"></div></div>
+      <div class="subsection"><div class="subsection-label">C. 組織の自己組織化</div><div id="qs-i"></div></div>
+      <div class="open-q-standalone">
+        <div class="q-top"><span class="q-num">Q37</span><div><div class="q-text">権限委譲を進める際、経営層として最も大きな懸念・リスクは何だとお考えですか？</div></div></div>
+        <div class="open-q"><textarea id="open-3" placeholder="ご自由にお書きください..." rows="3"></textarea></div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goPage(2)">← 戻る</button>
+      <button class="nav-btn primary" onclick="goPage(4)">次へ →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 4 -->
+  <div class="page" id="p4">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">第4部</span>
+        <span class="section-title">リーダーシップ・経営陣の役割</span>
+        <span class="section-desc">Q38〜Q47</span>
+      </div>
+      <div class="subsection"><div class="subsection-label">A. ビジョン・方向性の提示力</div><div id="qs-j"></div></div>
+      <div class="subsection"><div class="subsection-label">B. 変革推進における経営の姿勢</div><div id="qs-k"></div></div>
+      <div class="subsection"><div class="subsection-label">C. 次世代リーダーの育成</div><div id="qs-l"></div></div>
+      <div class="open-q-standalone">
+        <div class="q-top"><span class="q-num">Q48</span><div><div class="q-text">自律型組織を実現するうえで、経営陣が自ら変えるべき行動・姿勢は何だとお考えですか？</div></div></div>
+        <div class="open-q"><textarea id="open-4" placeholder="ご自由にお書きください..." rows="3"></textarea></div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goPage(3)">← 戻る</button>
+      <button class="nav-btn primary" onclick="goPage(5)">次へ →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 5 -->
+  <div class="page" id="p5">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">第5部</span>
+        <span class="section-title">組織文化・心理的安全性</span>
+        <span class="section-desc">Q49〜Q58</span>
+      </div>
+      <div class="subsection"><div class="subsection-label">A. 心理的安全性</div><div id="qs-m"></div></div>
+      <div class="subsection"><div class="subsection-label">B. 協働・多様性</div><div id="qs-n"></div></div>
+      <div class="subsection"><div class="subsection-label">C. 変革マインドセット</div><div id="qs-o"></div></div>
+      <div class="open-q-standalone">
+        <div class="q-top"><span class="q-num">Q59</span><div><div class="q-text">現在の組織文化の中で、自律型組織への変革にあたって最も変えたい点を教えてください。</div></div></div>
+        <div class="open-q"><textarea id="open-5" placeholder="ご自由にお書きください..." rows="3"></textarea></div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goPage(4)">← 戻る</button>
+      <button class="nav-btn primary" onclick="goPage(6)">次へ →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 6 -->
+  <div class="page" id="p6">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">第6部</span>
+        <span class="section-title">組織構造・戦略整合性</span>
+        <span class="section-desc">Q60〜Q67</span>
+      </div>
+      <div class="subsection"><div class="subsection-label">A. 組織構造と意思決定の整合</div><div id="qs-p"></div></div>
+      <div class="subsection"><div class="subsection-label">B. 戦略と現場の整合</div><div id="qs-q"></div></div>
+      <div class="open-q-standalone">
+        <div class="q-top"><span class="q-num">Q68</span><div><div class="q-text">組織構造の観点で、自律型組織の実現に向けて最優先で見直すべき点を教えてください。</div></div></div>
+        <div class="open-q"><textarea id="open-6" placeholder="ご自由にお書きください..." rows="3"></textarea></div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goPage(5)">← 戻る</button>
+      <button class="nav-btn primary" onclick="goPage(7)">次へ →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 7 -->
+  <div class="page" id="p7">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">第7部</span>
+        <span class="section-title">総合評価・変革への期待</span>
+        <span class="section-desc">Q69〜Q72</span>
+      </div>
+      <div id="qs-r"></div>
+      <div class="open-q-standalone">
+        <div class="q-top"><span class="q-num">Q73</span><div><div class="q-text">自律型組織変革を推進するにあたって、最初の6ヶ月で着手すべき最重要アクションは何だとお考えですか？</div></div></div>
+        <div class="open-q"><textarea id="open-7a" placeholder="ご自由にお書きください..." rows="3"></textarea></div>
+      </div>
+      <div class="open-q-standalone">
+        <div class="q-top"><span class="q-num">Q74</span><div><div class="q-text">変革を成功させるために、外部（コンサルタント・ファシリテーター等）に期待したいことがあればお聞かせください。</div></div></div>
+        <div class="open-q"><textarea id="open-7b" placeholder="ご自由にお書きください..." rows="3"></textarea></div>
+      </div>
+      <div class="open-q-standalone">
+        <div class="q-top"><span class="q-num">Q75</span><div><div class="q-text">その他、組織変革に向けてご意見・ご提案があれば自由にご記入ください。</div></div></div>
+        <div class="open-q"><textarea id="open-7c" placeholder="ご自由にお書きください..." rows="4"></textarea></div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goPage(6)">← 戻る</button>
+      <button class="nav-btn primary" onclick="showResults()">回答を確認する →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 8: Results -->
+  <div class="page" id="p8">
+    <div class="complete-screen">
+      <div class="complete-icon">✓</div>
+      <h2>回答ありがとうございました</h2>
+      <p>以下はあなたの回答に基づく診断スコアの概要です。</p>
+    </div>
+    <div id="result-body"></div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goPage(7)">← 修正する</button>
+      <button class="nav-btn primary" onclick="window.print()">印刷する</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = {
+  "qs-a": [
+    {id:"q1",  text:"現場レベルで日常的な意思決定が上位承認なしに完結している", sub:"稟議・エスカレーションの頻度"},
+    {id:"q2",  text:"重要な意思決定を行う際、経営陣が必要情報に即座にアクセスできる"},
+    {id:"q3",  text:"承認プロセス・稟議制度が意思決定スピードの障壁になっていない"},
+    {id:"q4",  text:"現場担当者が顧客・市場変化に対しその場で判断・対応できる権限がある"},
+  ],
+  "qs-b": [
+    {id:"q5",  text:"経営戦略・方向性が現場の末端まで正確に伝わっている"},
+    {id:"q6",  text:"意思決定に必要な情報が、必要なタイミングで経営陣に上がってくる"},
+    {id:"q7",  text:"「不都合な情報」が隠蔽・希釈されずに経営に届く文化がある"},
+    {id:"q8",  text:"他部門・事業ユニットの状況が経営レベルで把握しやすい体制がある"},
+  ],
+  "qs-c": [
+    {id:"q9",  text:"経営会議は明確なゴール設定のもとで意思決定・合意形成につながっている"},
+    {id:"q10", text:"経営陣の会議・打ち合わせの数と時間は適切で、無駄が少ない"},
+    {id:"q11", text:"経営陣の場でも、立場に関わらず率直な異論・懸念が発言できる"},
+    {id:"q12", text:"意思決定の根拠・経緯が記録され、後から参照できる体制がある"},
+  ],
+  "qs-d": [
+    {id:"q14", text:"自社を取り巻く市場・技術・競合の変化を、経営として素早く感知できている"},
+    {id:"q15", text:"変化への対応策が迅速に立案・実行されている（仮説検証が速い）"},
+    {id:"q16", text:"新規事業・イノベーションの試みが組織として活発に行われている"},
+  ],
+  "qs-e": [
+    {id:"q17", text:"前例主義・稟議慣習が変革の実行スピードを阻害していない"},
+    {id:"q18", text:"部門間のサイロ化（縦割り）が変革推進の障壁になっていない"},
+    {id:"q19", text:"失敗・実験を経営として許容し、そこから学ぶ文化を体現している"},
+  ],
+  "qs-f": [
+    {id:"q20", text:"成功・失敗の経験が組織として体系的に蓄積・共有されている"},
+    {id:"q21", text:"外部の知識・先進事例・異業種の技術を積極的に取り込む仕組みがある"},
+    {id:"q22", text:"役員・経営幹部自身が継続的に学習・自己変革に取り組んでいる"},
+  ],
+  "qs-g": [
+    {id:"q26", text:"経営から事業・機能ユニットへの権限委譲が適切に行われている"},
+    {id:"q27", text:"権限を委譲された層が、結果責任を持って自律的に動いている"},
+    {id:"q28", text:"権限委譲の範囲・基準が明文化され、組織全体で共有されている"},
+  ],
+  "qs-h": [
+    {id:"q29", text:"権限委譲と説明責任のバランスが適切に保たれている"},
+    {id:"q30", text:"成果・プロセスについて透明性のある説明責任の仕組みがある"},
+    {id:"q31", text:"経営として、委譲した権限に過度に介入しない自制が機能している"},
+  ],
+  "qs-i": [
+    {id:"q32", text:"チーム・部門が課題を自律的に発見し、解決策を考え実行している"},
+    {id:"q33", text:"現場リーダーが経営の方針を自分の言葉で解釈し、行動に変換できている"},
+    {id:"q34", text:"経営の関与なしに、現場レベルで連携・協力が自律的に生まれている"},
+  ],
+  "qs-j": [
+    {id:"q38", text:"経営陣は明確なビジョン・長期方向性を組織全体に示している"},
+    {id:"q39", text:"「なぜこの変革が必要か（Why）」が組織の隅々まで浸透している"},
+    {id:"q40", text:"外部環境の変化を経営として適切に解釈し、組織に翻訳して伝えている"},
+  ],
+  "qs-k": [
+    {id:"q41", text:"経営陣が変革の旗振り役として、自ら率先して行動・発信している"},
+    {id:"q42", text:"変革に対する経営の本気度が、組織の末端にまで伝わっている"},
+    {id:"q43", text:"変革に必要なリソース（人・金・時間）を経営として優先的に配分している"},
+  ],
+  "qs-l": [
+    {id:"q44", text:"次世代の経営・リーダー候補が計画的に育成されている"},
+    {id:"q45", text:"現場リーダーが自律的に意思決定できるよう、経営が機会と権限を与えている"},
+    {id:"q46", text:"優秀な人材が変革推進の重要なポジションに配置されている"},
+  ],
+  "qs-m": [
+    {id:"q49", text:"経営会議・役員の場で、ミスや失敗を率直に報告・共有できる雰囲気がある"},
+    {id:"q50", text:"少数意見・反対意見が尊重され、意思決定に反映される"},
+    {id:"q51", text:"「おかしい」と思ったことを上位者に対しても発言できる文化がある"},
+  ],
+  "qs-n": [
+    {id:"q52", text:"事業・機能部門を超えた協力関係が自然に生まれている"},
+    {id:"q53", text:"多様なバックグラウンド・考え方を持つ人材が経営の場でも尊重されている"},
+    {id:"q54", text:"年功序列・同質性への依存が変革の障壁になっていない"},
+  ],
+  "qs-o": [
+    {id:"q55", text:"現状維持より変革・改善を志向するマインドセットが経営陣に浸透している"},
+    {id:"q56", text:"イノベーションや新しい挑戦に対して、経営として一貫してポジティブな姿勢を示している"},
+    {id:"q57", text:"経営陣自身が、自分たちの働き方・決め方を変えようとしている"},
+  ],
+  "qs-p": [
+    {id:"q60", text:"現在の組織階層数（マネジメント層の数）は意思決定スピードに適している"},
+    {id:"q61", text:"組織の権限構造が自律型組織の実現を支援する形になっている"},
+    {id:"q62", text:"KPI・評価制度が自律的行動を促進する設計になっている"},
+  ],
+  "qs-q": [
+    {id:"q63", text:"中期経営計画・戦略が現場の日常業務に接続されている"},
+    {id:"q64", text:"戦略実行のPDCAが経営として適切に回されている"},
+    {id:"q65", text:"自律型組織変革が経営の最優先課題として位置づけられている"},
+  ],
+  "qs-r": [
+    {id:"q69", text:"現在の組織が、3年以内に自律型組織へ変革できると思う"},
+    {id:"q70", text:"経営陣全体が変革の方向性について十分に合意できている"},
+    {id:"q71", text:"自分自身がこの変革を強く推進したいと思っている"},
+    {id:"q72", text:"変革を阻む最大の要因は、経営陣自身にある（自己認識として）"},
+  ],
+};
+
+const SECTION_NAMES = {
+  "意思決定プロセス": ["qs-a","qs-b","qs-c"],
+  "変化対応力": ["qs-d","qs-e","qs-f"],
+  "自律型組織": ["qs-g","qs-h","qs-i"],
+  "リーダーシップ": ["qs-j","qs-k","qs-l"],
+  "組織文化": ["qs-m","qs-n","qs-o"],
+  "組織構造": ["qs-p","qs-q"],
+  "総合評価": ["qs-r"],
+};
+
+const PAGE_LABELS = ["表紙","第1部: 意思決定","第2部: 変化対応力","第3部: 自律型組織","第4部: リーダーシップ","第5部: 組織文化","第6部: 組織構造","第7部: 総合評価"];
+let answers = {};
+let currentPage = 0;
+
+function renderQuestions() {
+  let n = 0;
+  Object.keys(QUESTIONS).forEach(gid => {
+    const container = document.getElementById(gid);
+    if (!container) return;
+    QUESTIONS[gid].forEach(q => {
+      n++;
+      const block = document.createElement("div");
+      block.className = "q-block";
+      block.innerHTML = `
+        <div class="q-top">
+          <span class="q-num">Q${n}</span>
+          <div>
+            <div class="q-text">${q.text}</div>
+            ${q.sub ? `<div class="q-sub">${q.sub}</div>` : ""}
+          </div>
+        </div>
+        <div class="scale-row">
+          ${[1,2,3,4,5].map(v => `
+            <div class="scale-item" data-v="${v}">
+              <input type="radio" name="${q.id}" id="${q.id}_${v}" value="${v}">
+              <label class="scale-btn" for="${q.id}_${v}">${v}</label>
+              <span class="scale-label">${["","全く\nそう思わない","そう\n思わない","どちらとも\n言えない","そう\n思う","非常に\nそう思う"][v]}</span>
+            </div>`).join("")}
+        </div>`;
+      block.querySelectorAll("input[type=radio]").forEach(r => {
+        r.addEventListener("change", () => { answers[q.id] = parseInt(r.value); updateProgress(); });
+      });
+      container.appendChild(block);
+    });
+  });
+}
+
+function goPage(n) {
+  document.getElementById("p"+currentPage).classList.remove("active");
+  currentPage = n;
+  document.getElementById("p"+n).classList.add("active");
+  window.scrollTo({top:0, behavior:"smooth"});
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = Object.values(QUESTIONS).flat().length;
+  const done = Object.keys(answers).length;
+  const pct = Math.round(done / total * 100);
+  document.getElementById("pg-fill").style.width = pct + "%";
+  document.getElementById("pg-pct").textContent = pct + "% 完了";
+  const lbl = currentPage === 0 ? "表紙" : currentPage === 8 ? "結果" : (PAGE_LABELS[currentPage] || "");
+  document.getElementById("pg-label").textContent = lbl + " (" + done + "/" + total + " 問回答済)";
+}
+
+function getGroupScore(groups) {
+  const ids = groups.flatMap(g => (QUESTIONS[g]||[]).map(q => q.id));
+  const vals = ids.map(id => answers[id]).filter(v => v !== undefined);
+  if (!vals.length) return null;
+  return vals.reduce((a,b) => a+b, 0) / vals.length;
+}
+
+function showResults() {
+  const total = Object.values(QUESTIONS).flat().length;
+  const done = Object.keys(answers).length;
+  const overall = done > 0 ? Object.values(answers).reduce((a,b) => a+b, 0) / done : 0;
+
+  const scores = Object.entries(SECTION_NAMES).map(([name, groups]) => ({
+    name, score: getGroupScore(groups)
+  })).filter(x => x.score !== null);
+
+  const low = [...scores].sort((a,b) => a.score - b.score).slice(0, 3);
+
+  let html = `<div class="summary-grid">
+    <div class="summary-card"><div class="val">${done}/${total}</div><div class="lbl">回答済み設問数</div></div>
+    <div class="summary-card"><div class="val">${overall.toFixed(1)}</div><div class="lbl">総合平均スコア（/5）</div></div>
+    <div class="summary-card"><div class="val">${Math.round(overall/5*100)}%</div><div class="lbl">達成度（自律型組織）</div></div>
+  </div>
+  <div class="score-section">
+    <h4>カテゴリ別スコア</h4>`;
+
+  scores.forEach(({name, score}) => {
+    const pct = Math.round(score/5*100);
+    const color = score >= 4 ? "#27ae60" : score >= 3 ? "#e67e22" : "#c0392b";
+    html += `<div class="score-row">
+      <span class="name">${name}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color};"></div></div>
+      <span class="score-val">${score.toFixed(1)}</span>
+    </div>`;
+  });
+
+  html += `</div><div class="priority-list"><h4>優先対応が推奨されるカテゴリ</h4>`;
+  low.forEach((item, i) => {
+    const color = item.score < 3 ? "#c0392b" : "#e67e22";
+    html += `<div class="priority-item">
+      <span class="priority-badge">${i+1}位</span>
+      <span class="priority-name">${item.name}</span>
+      <span class="priority-score" style="color:${color};">${item.score.toFixed(1)} / 5.0</span>
+    </div>`;
+  });
+  html += `</div>`;
+
+  document.getElementById("result-body").innerHTML = html;
+  goPage(8);
+}
+
+renderQuestions();
+updateProgress();
+</script>
+</body>
+</html>
