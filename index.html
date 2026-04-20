@@ -135,6 +135,26 @@ body { font-family: var(--font-sans); background: var(--color-bg-secondary); col
   .section-desc { display: none; }
 }
 </style>
+  <script>
+async function checkPassword() {
+  const entered = prompt("パスワードを入力してください");
+  const hash = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(entered)
+  );
+  const hashHex = Array.from(new Uint8Array(hash))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  // "trial" をSHA-256ハッシュ化した値
+  const correct = "0b4e7a0e5fe84ad35fb5f95b9ceeac79bf6b6578fa9a3b935b3a3be5e8e03f45";
+
+  if (hashHex !== correct) {
+    document.body.innerHTML = "<h1>アクセスできません</h1>";
+  }
+}
+checkPassword();
+</script>
 </head>
 <body>
 <div class="survey-wrap">
